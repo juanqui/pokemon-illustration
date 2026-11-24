@@ -126,11 +126,11 @@ def rarity_star(size):
     return im.resize((size, size), Image.LANCZOS)
 
 
-def compose(art_path, out_path, seed_note="", holo=False):
+def compose(art_path, out_path, seed_note="", holo=False, protect=None):
     art = Image.open(art_path).convert("RGB").resize((W, H), Image.LANCZOS)
-    art = ImageEnhance.Contrast(art).enhance(1.055)
-    art = ImageEnhance.Color(art).enhance(1.035)
-    card = art.convert("RGBA")
+    graded = ImageEnhance.Contrast(art).enhance(1.055)
+    graded = ImageEnhance.Color(graded).enhance(1.035)
+    graded = graded.convert("RGBA")
 
     # gentle radial vignette; keeps focus on the subject and unifies the plate
     yy, xx = np.mgrid[0:H, 0:W]
@@ -138,14 +138,21 @@ def compose(art_path, out_path, seed_note="", holo=False):
     va = (np.clip((rr - 0.72) / 0.55, 0, 1) ** 1.4 * 46).astype(np.uint8)
     vig = Image.new("RGBA", (W, H), (24, 16, 10, 0))
     vig.putalpha(Image.fromarray(va))
-    card.alpha_composite(vig)
+    graded.alpha_composite(vig)
+
+    if protect:
+        pm = Image.open(protect).convert("L").resize((W, H), Image.LANCZOS)
+        base = art.convert("RGBA")
+        card = Image.composite(base, graded, pm)
+    else:
+        card = graded
 
     # Cinematic grade: lift the canopy light, deepen the bottom for type.
     card.alpha_composite(vgrad((W, H), [
         (0.00, (28, 22, 12, 92)),
-        (0.10, (28, 22, 12, 40)),
-        (0.22, (28, 22, 12, 0)),
-        (0.60, (28, 18, 10, 0)),
+        (0.09, (28, 22, 12, 40)),
+        (0.16, (28, 22, 12, 0)),
+        (0.62, (28, 18, 10, 0)),
         (0.78, (30, 17, 9, 30)),
         (0.88, (28, 15, 9, 130)),
         (1.00, (22, 11, 7, 238)),
@@ -278,5 +285,6 @@ if __name__ == "__main__":
     p.add_argument("art")
     p.add_argument("out")
     p.add_argument("--holo", action="store_true")
+    p.add_argument("--protect", default=None, help="L mask: white pixels keep the ungraded art")
     a = p.parse_args()
-    compose(a.art, a.out, holo=a.holo)
+    compose(a.art, a.out, holo=a.holo, protect=a.protect)
