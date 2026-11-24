@@ -1,6 +1,6 @@
 ---
 name: tcg-window-outpaint
-description: Turn any TCG card into a full-art sleeve print with its original art window preserved 1:1 and only the outside out-painted; always emit a textless final card, a UV print layer with an exactly aligned transparent window, white-ink mask, real-card preview, and a source/projects/vulpix-30th/output/print comparison.
+description: Turn any TCG card into a full-art sleeve print with its original art window preserved 1:1 and only the outside out-painted; always emit a textless final card, a UV print layer with an exactly aligned transparent window, white-ink mask, real-card preview, and a source | textless final | clear-window print comparison.
 ---
 
 # TCG window outpainting → UV sleeve print
@@ -71,12 +71,12 @@ The clear-window print layer is what goes on the sleeve.
 4. **Textless final (required).** Save the out-painted art plate at card size
    with the exact window/sticker, then run:
    ```bash
-   python pipeline/make_textless.py --art final/art/NAME.jpg \
+   python pipeline/make_textless.py --art projects/vulpix-30th/output/art/NAME.jpg \
      --source projects/vulpix-30th/source/card.png --window 66,101,683,484 \
      --sticker-mask work/sticker_mask_final.png \
      --out-card projects/vulpix-30th/output/cards/NAME_textless.png \
      --print-dir projects/vulpix-30th/output/print --name NAME_textless \
-     --dpi 300 --inset 2 --compare final/source_vs_result.jpg
+     --dpi 300 --inset 2 --compare projects/vulpix-30th/output/verification/textless_NAME.jpg
    ```
    It pastes the exact window and sticker, applies the rounded silhouette, writes
    the textless card, generates the clear-window print layer and previews,
@@ -157,4 +157,4 @@ max 0. Textless blossom card:
 print: `projects/vulpix-30th/output/print/vulpix_exact_blossom_textless_print_300dpi.png`, hole
 70,106–698,494 at 300 DPI (2 px inset, alpha 0), with
 `..._print_preview_real.jpg` and `..._print_preview_alpha.jpg`. Three-panel
-comparison: `final/source_vs_result.jpg`.
+comparison: `projects/vulpix-30th/output/verification/textless_blossom.jpg`.

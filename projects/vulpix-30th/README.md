@@ -71,3 +71,23 @@ python pipeline/make_print.py --card projects/vulpix-30th/output/cards/vulpix_ex
 
 Per-card settings are in `config.json`; the reusable procedure is the
 `tcg-window-outpaint` skill (`skill://tcg-window-outpaint`).
+
+## Textless final-final + clear-window print (skill requirement)
+
+The reusable skill requires the **textless** card and the **clear-window print**
+as the final-final output. Both are generated from the exact art plate with
+`pipeline/make_textless.py` (window MAE 0.0, print hole alpha 0):
+
+| output | file |
+|---|---|
+| textless final card | `output/cards/vulpix_exact_blossom_textless.png` |
+| clear-window UV print | `output/print/vulpix_exact_blossom_textless_print_300dpi.png` |
+| white-ink mask | `output/print/vulpix_exact_blossom_textless_print_300dpi_white.png` |
+| real-card preview | `output/print/vulpix_exact_blossom_textless_print_preview_real.jpg` |
+| checkerboard clear-window proof | `output/print/vulpix_exact_blossom_textless_print_preview_alpha.jpg` |
+| three-panel comparison | `output/verification/textless_blossom.jpg` |
+
+The worded chrome cards (`vulpix_exact_spring.png`, `vulpix_exact_blossom.png`)
+remain as optional previews; the **textless clear-window print** is what goes on
+the sleeve. The real card supplies the Pokémon/window; the printed surround is
+textless and covers the real card's frame/panel.

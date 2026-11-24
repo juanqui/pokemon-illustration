@@ -60,6 +60,10 @@ The source window is **not scaled, shifted, cropped, feathered or repainted**:
 - Print details: 750×1050 @ 300 DPI, window hole 70,106–698,494 (2 px inset),
   white-ink mask, RGBA transparency; see the
   [project README](projects/vulpix-30th/README.md).
+- **Skill-required final-final:** [textless card](projects/vulpix-30th/output/cards/vulpix_exact_blossom_textless.png) ·
+  [clear-window print](projects/vulpix-30th/output/print/vulpix_exact_blossom_textless_print_300dpi.png) ·
+  [real-card preview](projects/vulpix-30th/output/print/vulpix_exact_blossom_textless_print_preview_real.jpg) ·
+  [three-panel comparison](projects/vulpix-30th/output/verification/textless_blossom.jpg).
 
 ## 3. Pipeline
 
