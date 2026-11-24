@@ -61,7 +61,8 @@ def main():
     # exact illustration content; 3 px anti-aliased outer edge only
     wm = Image.new("L", (W, H), 0)
     wm.paste(Image.new("L", window.size, 255), (WIN[0], WIN[1]))
-    wm = wm.filter(ImageFilter.GaussianBlur(10))
+    # hard edge: the full window must be pixel-exact
+    # wm is used as-is
     wlayer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     wlayer.paste(window, (WIN[0], WIN[1])); wlayer.putalpha(wm)
     card.alpha_composite(wlayer)

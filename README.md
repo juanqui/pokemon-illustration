@@ -22,9 +22,9 @@ unchanged. **Only the card area outside the window is out-painted.**
 
 - Window rect in both source and final: **x 66..683, y 101..484**, size
   **617×383**, aspect **1.611**. No scale, shift, stretch, or crop.
-- Content interior (12 px erosion, **212,887 px**): **MAE 0.003/255**, max **3**
-  (PNG rounding + the 10 px boundary feather). The fox/background are the
-  source pixels.
+- The **entire 617×383 window (236,311 px)** is pixel-exact: **MAE 0.0**,
+  max **0**. No crop, feather, scale, or shift. The fox, background and window
+  rim are the source pixels.
 - The 30th-anniversary sticker is preserved as a decal at its source position.
 - No text, gradient, grade, vignette or border is drawn over the window: the top
   gradient stops at y=94, the bottom starts at y=502, and a protect mask keeps
@@ -43,9 +43,9 @@ unchanged. **Only the card area outside the window is out-painted.**
    [ausboss outpaint LoRA v2](https://huggingface.co/ausboss/Qwen-Image-2.1-Outpaint-LoRA);
    25 steps, CFG 1, `euler`/`simple`. Two prompts/seeds: spring path/stream and
    cherry-blossom meadow.
-3. **Exact composite.** Paste the original 617×383 content and sticker back at
-   their source coordinates. The interior is untouched; a 10 px feather only
-   softens the outer boundary into the generated surround.
+3. **Exact composite.** Paste the original 617×383 content and sticker back,
+   hard-edged, at their exact source coordinates. The full window is
+   pixel-identical; only the outside is generated.
 4. **Card chrome outside the window.** Lato typography, vector energy symbols,
    SIR footer, transparent rounded card. The grade/vignette/text gradients are
    confined outside the window.
