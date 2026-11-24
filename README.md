@@ -102,3 +102,44 @@ Code MIT. Unofficial fan art; Pokémon and Vulpix are © Nintendo / Creatures
 Inc. / GAME FREAK inc. Not affiliated with or endorsed by The Pokémon Company;
 do not sell the output. Qwen-Image-2.1 weights follow the Qwen Research License;
 the outpaint LoRA follows its model card. Lato is OFL.
+
+## UV sleeve print
+
+The print layer has the **window removed**: RGBA, alpha 0 inside the art window,
+opaque everywhere else. Print it on the sleeve, insert the real card, and the
+real card's fox/background show through while the printed surround covers the
+frame and panel.
+
+| spring print | real card behind | transparency |
+|---|---|---|
+| [300 DPI RGBA](final/print/vulpix_exact_spring_print_300dpi.png) | [preview](final/print/vulpix_exact_spring_print_preview_real.jpg) | [alpha](final/print/vulpix_exact_spring_print_preview_alpha.jpg) |
+| [blossom 300 DPI](final/print/vulpix_exact_blossom_print_300dpi.png) | [preview](final/print/vulpix_exact_blossom_print_preview_real.jpg) | [alpha](final/print/vulpix_exact_blossom_print_preview_alpha.jpg) |
+
+- 750×1050 px at 300 DPI (2.5×3.5 in). Window hole **70,106–698,494** — the
+  source window scaled and inset 2 px for registration.
+- White-ink underbase: `final/print/*_white.png` (white where ink prints, black
+  in the window and outside the rounded card).
+- `--mirror` in `scripts/make_print.py` for reverse/inside printing; keep
+  unmirrored for outside printing.
+- Verify: `scripts/verify_window.py` → full window MAE 0.0, print hole alpha 0.
+
+## Skill
+
+Reusable skill **`tcg-window-outpaint`** — invoke `skill://tcg-window-outpaint`.
+Installed at `~/.agents/skills/tcg-window-outpaint/` and copied under
+`skill/tcg-window-outpaint/` in this repo.
+
+It encodes: exact hard-edged window preservation, outside-only outpainting,
+chrome outside the window, MAE-0 verification, and the UV print file with
+transparent window, white mask, real-card preview, inset, DPI and mirror
+controls. Per-card inputs live in `config.example.json`; copy it, set the source,
+window rect, chrome text, prompt and print settings.
+
+```bash
+python scripts/make_print.py --card final/cards/vulpix_exact_spring.png \
+  --source assets/source-card.png --window 66,101,683,484 \
+  --dpi 300 --inset 2 --out-dir final/print --name vulpix_exact_spring
+python scripts/verify_window.py --card final/cards/vulpix_exact_spring.png \
+  --source assets/source-card.png --window 66,101,683,484 \
+  --print final/print/vulpix_exact_spring_print_300dpi.png
+```
