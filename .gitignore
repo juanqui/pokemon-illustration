@@ -1,0 +1,17 @@
+comfy-venv/
+.venv/
+work/canvas_gray.png
+work/plate.png
+work/known_mask.png
+work/composition_preview.png
+out/raw/
+*.log
+__pycache__/
+work/
+out/raw/
+out/raw2/
+out/input2/
+out/raw/*.json
+out/raw2/*.json
+out/
+final/*.png
