@@ -21,9 +21,11 @@ def font(style, size):
 
 
 def rounded_mask(size, r):
-    m = Image.new("L", size, 0)
-    ImageDraw.Draw(m).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), r, fill=255)
-    return m
+    # 4x supersampled so the card silhouette is anti-aliased.
+    w, h = size
+    m = Image.new("L", (w * 4, h * 4), 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, w * 4 - 1, h * 4 - 1), r * 4, fill=255)
+    return m.resize(size, Image.LANCZOS)
 
 
 def vgrad(size, stops):
@@ -265,9 +267,9 @@ def finish(card, out_path, seed_note=""):
     card.putalpha(rounded_mask((W, H), 52))
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    card.convert("RGB").save(out_path, quality=95)
-    small = card.convert("RGB").resize((732, 1024), Image.LANCZOS)
-    small.save(out_path.with_name(out_path.stem + "_732.png"))
+    card.save(out_path, optimize=True)
+    small = card.resize((732, 1024), Image.LANCZOS)
+    small.save(out_path.with_name(out_path.stem + "_732.png"), optimize=True)
     return out_path
 
 
