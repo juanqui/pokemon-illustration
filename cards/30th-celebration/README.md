@@ -44,3 +44,7 @@ Unofficial fan archive for reference and non-commercial artwork. Pokémon and
 all card images are © Nintendo / Creatures Inc. / GAME FREAK inc. / The Pokémon
 Company. Card images belong to their respective rights holders; do not sell or
 redistribute commercially.
+
+`images/futuristic/157.png` and `158.png` are category copies of the two
+Futuristic Rare cards already in the main set; `images/futuristic/README.md`
+explains the empty `EN_1` tile and the 3 unexposed checklist entries.
