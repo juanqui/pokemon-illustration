@@ -1,0 +1,28 @@
+{
+  "source": "projects/vulpix-30th/source/card.png",
+  "card_size": [732, 1024],
+  "window_rect": [66, 101, 683, 484],
+  "comfy_url": "http://127.0.0.1:8188",
+  "outpaint": {
+    "prompt": "Outpaint only outside the rectangular illustration and sticker; keep the illustration and sticker unchanged. Fill the surrounding card with a soft spring garden that continues the illustration's scene: a leafy canopy above, dense bushes and coral flowers at the sides, and a large foreground meadow where the pale winding path continues down to a shallow clear stream. Pastel greens, warm cream light, smooth 3D storybook shading, gentle depth of field, no text, no border, no frame, no extra characters.",
+    "seed": 606,
+    "steps": 25,
+    "prefix": "content_a"
+  },
+  "chrome": {
+    "name": "Vulpix",
+    "stage": "BASIC",
+    "hp": 70,
+    "type": "fire",
+    "attack": {"name": "Wild Kick", "cost": 1, "damage": 30, "text": "Flip a coin. If tails, this attack does nothing."},
+    "weakness": "water",
+    "resistance": null,
+    "retreat": 1,
+    "artist": "miki kudo",
+    "set_code": "30EN",
+    "number": "009/128",
+    "rarity_stars": 2,
+    "flavor": "As its body grows larger, its six warm tails become more beautiful, with a more luxurious coat of fur."
+  },
+  "print": {"dpi": 300, "card_inches": [2.5, 3.5], "window_inset_px": 2, "mirror": false}
+}

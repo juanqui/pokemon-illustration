@@ -1,5 +1,5 @@
 {
-  "source": "assets/source-card.png",
+  "source": "projects/vulpix-30th/source/card.png",
   "card_size": [732, 1024],
   "window_rect": [66, 101, 683, 484],
   "comfy_url": "http://127.0.0.1:8188",

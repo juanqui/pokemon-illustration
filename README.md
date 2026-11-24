@@ -1,145 +1,83 @@
-# Vulpix — exact-window outpainting
+# Pokémon TCG: 30th Celebration — archive + exact-window sleeve pipeline
 
-The source card’s Pokémon art window is **617×383 px at (66,101)** in the
-732×1024 card. In the final cards it is copied **1:1 at exactly those
-coordinates**. The fox, the background, the sticker and the window’s aspect are
-unchanged. **Only the card area outside the window is out-painted.**
+Two linked deliverables:
 
-![source vs final](final/source_vs_result.jpg)
+1. **The official 30th Celebration gallery archive** — every distinct card image
+   the official gallery serves, organized with a manifest, contact sheets and the
+   official checklist.
+2. **The Vulpix 009 exact-window sleeve** — a full-art card built *outside* an
+   untouched 617×383 source window, with a UV print file whose window is
+   transparent so the real card shows through the sleeve.
 
-![window preservation proof](final/verification/window_exact.jpg)
-
-## Final cards
-
-| card | art only |
-|---|---|
-| [Exact Window · Spring](final/cards/vulpix_exact_spring.png) | [art](final/art/vulpix_exact_spring.jpg) |
-| [Exact Window · Blossom](final/cards/vulpix_exact_blossom.png) | [art](final/art/vulpix_exact_blossom.jpg) |
-
-![gallery](final/gallery.jpg)
-
-## Verification
-
-- Window rect in both source and final: **x 66..683, y 101..484**, size
-  **617×383**, aspect **1.611**. No scale, shift, stretch, or crop.
-- The **entire 617×383 window (236,311 px)** is pixel-exact: **MAE 0.0**,
-  max **0**. No crop, feather, scale, or shift. The fox, background and window
-  rim are the source pixels.
-- The 30th-anniversary sticker is preserved as a decal at its source position.
-- No text, gradient, grade, vignette or border is drawn over the window: the top
-  gradient stops at y=94, the bottom starts at y=502, and a protect mask keeps
-  the window out of the global grade.
-- The window’s thin inner rim is the source image’s own edge, not a generated
-  frame. The silver frame/panel outside the art image are out-painted.
-
-## Pipeline
-
-![pipeline](final/pipeline.jpg)
-
-1. **Exact-content canvas.** 736×1024 gray canvas; paste the source art window
-   `crop(66,101,683,484)` at `(66,101)`, plus the source sticker mask. Everything
-   outside that union is flat gray. No scaling.
-2. **Outpaint only the outside.** Qwen-Image-2.1 INT8 convrot + the
-   [ausboss outpaint LoRA v2](https://huggingface.co/ausboss/Qwen-Image-2.1-Outpaint-LoRA);
-   25 steps, CFG 1, `euler`/`simple`. Two prompts/seeds: spring path/stream and
-   cherry-blossom meadow.
-3. **Exact composite.** Paste the original 617×383 content and sticker back,
-   hard-edged, at their exact source coordinates. The full window is
-   pixel-identical; only the outside is generated.
-4. **Card chrome outside the window.** Lato typography, vector energy symbols,
-   SIR footer, transparent rounded card. The grade/vignette/text gradients are
-   confined outside the window.
-
-## Why earlier attempts were wrong
-
-- **v1:** raw outpaint re-rendered the plate — the model output differed from
-  the source window by MAE **4.64/255**, max 255, 5.3% of pixels >20. The
-  character was altered. Rejected.
-- **v2:** the fox was preserved but the window was scaled to card width and its
-  background replaced by a generated scene. Wrong size/position/aspect and wrong
-  content. Rejected.
-- **v3 (this repo):** exact window at exact source geometry; out-paint only the
-  outside.
-
-## Reproduce
-
-```bash
-# exact-content canvas + sticker mask (SAM ViT-B checkpoint in work/)
-python scripts/segment_sticker.py
-python scripts/make_content_canvas.py
-
-# out-paint only the gray outside
-python scripts/outpaint.py --input work/content_canvas_gray.png \
-  --prompt "<scene prompt>" --seed 606 --steps 25 --prefix content_a \
-  --out out/win_raw/content_a_606.png
-
-# exact-content card
-python scripts/compose_window_card.py out/win_raw/content_a_606.png \
-  final/cards/vulpix_exact_spring.png
-```
-
-ComfyUI 0.43.0, PyTorch 2.15.0+cu132. Weights: Comfy-Org Qwen-Image-2.1 INT8
-convrot diffusion model, `qwen3vl_8b_int8_convrot` text encoder,
-`qwen_image_2.1_vae_bf16`, `outpaint-v2.safetensors`. Prompts used are recorded
-in the run history; the two published scenes are spring path/stream (seed 606)
-and cherry-blossom meadow (seed 707).
-
-## Layout
+## Repository map
 
 ```
-assets/source-card.png        732x1024 source
-scripts/make_content_canvas.py exact 617x383 window + sticker on gray
-scripts/segment_sticker.py    SAM sticker mask
-scripts/compose_window_card.py exact-window card chrome
-final/cards/                  final 732x1024 cards
-final/art/                    full-bleed art with exact window
-final/verification/           source-vs-final + diff proof
+cards/30th-celebration/        188 distinct official card images
+  images/main/                 158 cards (001–158)
+  images/classic/              30 Classic Collection cards
+  manifest.json                names, numbers, source URLs, tags
+  contact-main.jpg             all 158 main cards
+  contact-classic.jpg          all 30 Classic cards
+  docs/                        official checklist PDF
+projects/vulpix-30th/          Vulpix 009 project
+  source/card.png              user-supplied 732×1024 mockup
+  output/cards/                final exact-window cards
+  output/print/                UV sleeve print + white mask + previews
+  output/verification/         source-vs-final zero-diff proof
+pipeline/                      canvas, ComfyUI outpainting, compositor, print/verify
+skill/tcg-window-outpaint/     reusable skill (also installed in ~/.agents/skills)
 ```
 
-## License / disclaimer
+## 1. 30th Celebration archive
 
-Code MIT. Unofficial fan art; Pokémon and Vulpix are © Nintendo / Creatures
-Inc. / GAME FREAK inc. Not affiliated with or endorsed by The Pokémon Company;
-do not sell the output. Qwen-Image-2.1 weights follow the Qwen Research License;
-the outpaint LoRA follows its model card. Lato is OFL.
+**188 distinct card images** downloaded from the official gallery as 2× PNGs
+(660×920): **158 main** + **30 Classic Collection**.
 
-## UV sleeve print
+- [Main contact sheet](cards/30th-celebration/contact-main.jpg) ·
+  [Classic contact sheet](cards/30th-celebration/contact-classic.jpg)
+- [Manifest](cards/30th-celebration/manifest.json) ·
+  [Dataset notes](cards/30th-celebration/README.md) ·
+  [Official checklist PDF](cards/30th-celebration/docs/30c_web_cardlist_en.pdf)
 
-The print layer has the **window removed**: RGBA, alpha 0 inside the art window,
-opaque everywhere else. Print it on the sleeve, insert the real card, and the
-real card's fox/background show through while the printed surround covers the
-frame and panel.
+The gallery’s Futuristic Rare filter repeats main 157/158 and its `EN_1` tile is
+a 404 placeholder; 191 gallery tiles were observed but only **188 distinct card
+images** are served. The checklist’s 3 Ultra Secret / Basic Energy entries are
+not exposed as gallery card images. Details and the full caveat are in the
+dataset README.
 
-| spring print | real card behind | transparency |
-|---|---|---|
-| [300 DPI RGBA](final/print/vulpix_exact_spring_print_300dpi.png) | [preview](final/print/vulpix_exact_spring_print_preview_real.jpg) | [alpha](final/print/vulpix_exact_spring_print_preview_alpha.jpg) |
-| [blossom 300 DPI](final/print/vulpix_exact_blossom_print_300dpi.png) | [preview](final/print/vulpix_exact_blossom_print_preview_real.jpg) | [alpha](final/print/vulpix_exact_blossom_print_preview_alpha.jpg) |
+## 2. Vulpix 009 exact-window sleeve
 
-- 750×1050 px at 300 DPI (2.5×3.5 in). Window hole **70,106–698,494** — the
-  source window scaled and inset 2 px for registration.
-- White-ink underbase: `final/print/*_white.png` (white where ink prints, black
-  in the window and outside the rounded card).
-- `--mirror` in `scripts/make_print.py` for reverse/inside printing; keep
-  unmirrored for outside printing.
-- Verify: `scripts/verify_window.py` → full window MAE 0.0, print hole alpha 0.
+The source window is **not scaled, shifted, cropped, feathered or repainted**:
+617×383 at `(66,101)`, copied hard-edged 1:1. Full-window verification:
+**236,311 px, MAE 0.0, max 0**. Only the outside is out-painted.
 
-## Skill
+- [Spring card](projects/vulpix-30th/output/cards/vulpix_exact_spring.png) ·
+  [Blossom card](projects/vulpix-30th/output/cards/vulpix_exact_blossom.png)
+- [Preservation proof](projects/vulpix-30th/output/verification/window_exact.jpg)
+- [UV print file](projects/vulpix-30th/output/print/vulpix_exact_spring_print_300dpi.png) ·
+  [real-card preview](projects/vulpix-30th/output/print/vulpix_exact_spring_print_preview_real.jpg) ·
+  [alpha preview](projects/vulpix-30th/output/print/vulpix_exact_spring_print_preview_alpha.jpg)
+- Print details: 750×1050 @ 300 DPI, window hole 70,106–698,494 (2 px inset),
+  white-ink mask, RGBA transparency; see the
+  [project README](projects/vulpix-30th/README.md).
 
-Reusable skill **`tcg-window-outpaint`** — invoke `skill://tcg-window-outpaint`.
-Installed at `~/.agents/skills/tcg-window-outpaint/` and copied under
-`skill/tcg-window-outpaint/` in this repo.
+## 3. Pipeline
 
-It encodes: exact hard-edged window preservation, outside-only outpainting,
-chrome outside the window, MAE-0 verification, and the UV print file with
-transparent window, white mask, real-card preview, inset, DPI and mirror
-controls. Per-card inputs live in `config.example.json`; copy it, set the source,
-window rect, chrome text, prompt and print settings.
+`pipeline/` contains the reproducible chain: exact-content canvas → Qwen-Image-2.1
+INT8 convrot + outpaint LoRA (outside only) → exact-window composite + chrome →
+MAE-0 verification → UV print with transparent window, white mask, real-card
+preview, inset/DPI/mirror controls.
 
-```bash
-python scripts/make_print.py --card final/cards/vulpix_exact_spring.png \
-  --source assets/source-card.png --window 66,101,683,484 \
-  --dpi 300 --inset 2 --out-dir final/print --name vulpix_exact_spring
-python scripts/verify_window.py --card final/cards/vulpix_exact_spring.png \
-  --source assets/source-card.png --window 66,101,683,484 \
-  --print final/print/vulpix_exact_spring_print_300dpi.png
-```
+## 4. Skill
+
+**`tcg-window-outpaint`** — invoke `skill://tcg-window-outpaint`. Installed at
+`~/.agents/skills/tcg-window-outpaint/` and copied under
+[`skill/tcg-window-outpaint/`](skill/tcg-window-outpaint/). It encodes the
+non-negotiables (hard-edged window, only outside generated, MAE 0, print hole)
+and the per-card `config.example.json`.
+
+## Copyright
+
+Unofficial fan work. Pokémon and all card images are © Nintendo / Creatures Inc.
+/ GAME FREAK inc. / The Pokémon Company. Card images belong to their respective
+rights holders; do not sell or redistribute commercially.
