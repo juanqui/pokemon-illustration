@@ -254,6 +254,7 @@ def finish(card, out_path, seed_note=""):
     border = 9
     silver = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(silver)
+    d.rounded_rectangle((1, 1, W - 2, H - 2), 52, outline=(86, 86, 88, 150), width=2)
     d.rounded_rectangle((0, 0, W - 1, H - 1), 52, outline=(238, 240, 243, 255), width=border)
     d.rounded_rectangle((border, border, W - 1 - border, H - 1 - border), 46,
                         outline=(150, 154, 160, 255), width=2)
